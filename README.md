@@ -1,2 +1,2 @@
-# pyqt5_load_img
-pyqt5 加载图片，可以拖拽和缩放
+## 使用教程
+    > python app.py
