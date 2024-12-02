@@ -37,10 +37,7 @@ class Select:
     def img_show(self, option):
         if self.image_path and self.image_list:
             try:
-                img = cv2.imdecode(np.fromfile(os.path.join(self.image_path, self.image_list[self.image_idx]), dtype=np.uint8), cv2.IMREAD_COLOR)
-                cvimg = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-                y, x = cvimg.shape[:-1]
-                frame = QPixmap(QImage(cvimg, x, y, QImage.Format_RGB888))
+                frame = QPixmap(os.path.join(self.image_path, self.image_list[self.image_idx]))
                 self.mainWindow.graphicsView.image = frame
                 self.mainWindow.graphicsView.image_item = QGraphicsPixmapItem(frame)
 
