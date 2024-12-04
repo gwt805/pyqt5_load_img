@@ -28,6 +28,7 @@ class AppImageView(Ui_MainWindow):
     def get_imgs(self):
         self.path = QFileDialog.getExistingDirectory(self, "选择图片所在文件夹")
         if self.path:
+            self.remove_params()
             self.label.setText(f"当前目录: {self.path}")
             self.img_list = self.find_image_files()
             self.img_list = natsorted(self.img_list)
@@ -56,9 +57,11 @@ class AppImageView(Ui_MainWindow):
     def input_img_idx(self):
         if self.img_idx_input.value() <= 0:
             self.img_idx_input.setValue(1)
+            self.img_idx_now.setText("1")
             self.img_idx = 0
         elif self.img_idx_input.value() > len(self.img_list):
             self.img_idx_input.setValue(len(self.img_list))
+            self.img_idx_now.setText(str(len(self.img_list)))
             self.img_idx = len(self.img_list) - 1
         else:
             self.img_idx = int(self.img_idx_input.text()) - 1
@@ -67,12 +70,14 @@ class AppImageView(Ui_MainWindow):
     def img_list_select(self, selected, deselected):
         if selected.indexes():
             self.img_idx = selected.indexes()[0].row()
+            self.img_idx_now.setText(str(self.img_idx + 1))
             self.img_show("update")
 
     def img_show(self, option):
         if self.img_list:
             try:
-                self.img_name.setText(f" {self.img_list[self.img_idx]}({self.img_idx + 1}/{len(self.img_list)}) ")
+                self.img_name.setText(f" {self.img_list[self.img_idx]} ")
+                self.img_idx_now.setText(str(self.img_idx + 1))
                 frame = QPixmap(self.img_list[self.img_idx])
                 self.graphicsView.image = frame
                 self.graphicsView.image_item = QGraphicsPixmapItem(frame)
@@ -102,6 +107,17 @@ class AppImageView(Ui_MainWindow):
                 if self.img_idx < len(self.img_list) - 1:
                     self.img_idx += 1
             self.img_show("update")
+
+    def remove_params(self):
+        self.img_idx = 0
+        self.img_list = []
+        self.img_idx_now.setText("0")
+        self.img_idx_total.setText("0")
+        self.img_idx_input.clear()
+        self.img_name.setText("未找到图片")
+        self.graphicsView.scene.clear()
+        self.graphicsView.image_item = None
+        self.model.clear()
 
     def showMsg(self, title: str, msg: str):
         reply = QMessageBox(QMessageBox.Warning, title, msg, QMessageBox.NoButton, self)
